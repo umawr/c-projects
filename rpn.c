@@ -25,7 +25,8 @@ int main()
 
     for (char *buffer_string = buffer; *buffer_string; )
     {
-        if (isdigit((unsigned char)*buffer_string)) push((int)strtol(buffer_string, &buffer_string, 10));   // (string to read from, , base 10)
+        if (isdigit((unsigned char)*buffer_string) || (*buffer_string == '-' && isdigit((unsigned char)*(buffer_string + 1))))
+            push((int)strtol(buffer_string, &buffer_string, 10));   // (string to read from, , base 10)
         else
         {
             if (ispunct((unsigned char)*buffer_string)) compute(*buffer_string);
