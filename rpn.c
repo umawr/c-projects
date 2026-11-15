@@ -1,11 +1,13 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
+#include <stdio.h> // for printf() and scanf() and fgets()
+#include <string.h> // for strcspn()
+#include <ctype.h> // for istype()
+#include <stdlib.h> //fro strtol() - string to long
+#include <math.h>
 
-#define MAX 10
+#define MAX 20
 int stack[MAX] = {0};
 int top = -1; // to make sure that the first element is 0
-
+// stack is LIFO so the top most index is "0"
 int push(int input);
 int compute(char op);
 int pop(void);
@@ -21,22 +23,22 @@ int main()
         printf("You typed: %s\n", buffer);
     }
 
-    for (int i = 0; i < 20; i++)
+    for (char *buffer_string = buffer; *buffer_string; )
     {
-        if (isspace((unsigned char)buffer[i])) continue; // space gets ignored
-        if (isdigit((unsigned char)buffer[i])) push(buffer[i] - '0');// buffer[i] - '0' is to convert the ascii value to its regular value 
-        else if (ispunct((unsigned char)buffer[i])) compute(buffer[i]);
+        if (isdigit((unsigned char)*buffer_string)) push((int)strtol(buffer_string, &buffer_string, 10));   // (string to read from, , base 10)
+        else
+        {
+            if (ispunct((unsigned char)*buffer_string)) compute(*buffer_string);
+            buffer_string++;
+        }
     }
-    printf("result %d\n", pop());
+    printf("Result is %d\n", pop());
     
     return 0;
 }
 
 int push(int input)
 {
-    // printf("\n\n");
-    // for (int i = 0; i < MAX; i++) printf("%d\n", stack[i]);
-    // printf("\n\n");
     if(top >= MAX - 1) return 0; // fallback
     top++;
     stack[top] = input;
@@ -45,7 +47,7 @@ int push(int input)
 
 int pop(void)
 {
-    if (top < 0) return 0;
+    if (top < 0) return 0; // fallback
     int temp = stack[top];
     stack[top] = 0;
     top--;
@@ -62,12 +64,12 @@ int compute(char op)
         case '-':  push(operand2 - operand1); break;
         case '*':  push(operand2 * operand1); break;
         case '/': 
-            if (operand2 == 0) 
+            if (operand1 == 0) 
             {
-                printf("Error: division by zero\n");
+                printf("!!Error - division by zero!!\n");
                 return 0;
             }
-            push(operand2 / operand2); break;
+            push(operand2 / operand1); break;
     }
     return 0; 
 }
