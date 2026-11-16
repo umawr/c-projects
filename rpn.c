@@ -78,6 +78,13 @@ int compute(char op)
                 return 0;
             }
             push(operand2 / operand1); break;
+        case '%':
+            if (operand1 == 0)
+            {
+                printf("!!Error - division by zero!!\n");
+                return 0;
+            }
+            push(operand2 % operand1); break;
     }
     return 0;
 }
